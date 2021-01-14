@@ -8,9 +8,9 @@
     "start:dev": "nodemon",
     "test": "nodemon --config ./spec/nodemon.json",
     "create-db": "cd dynamodb && node createReposTable.ts && cd ..",
-    "delete-db": "cd dynamodb && node deleteCarsTable.js && cd ..",
-    "load-data": "cd dynamodb && node loadCarData.js && cd ..",
-    "read-data": "cd dynamodb && node readDataTest.js && cd .."
+    "delete-db": "cd dynamodb && node deleteReposTable.ts && cd ..",
+    "load-data": "cd dynamodb && node loadReposData.ts && cd ..",
+    "read-data": "cd dynamodb && node readDataTest.ts && cd .."
   },
   "nodemonConfig": {
     "watch": [

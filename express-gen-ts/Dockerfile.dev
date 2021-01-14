@@ -6,3 +6,5 @@ COPY package.json .
 
 COPY . .
 
+RUN npm run create-db
+

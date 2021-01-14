@@ -1,8 +1,15 @@
-var AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
+
+// import AWS from "aws-sdk";
+
+const credentials = new AWS.Credentials({
+    accessKeyId: process.env.AWSAccessKeyId,
+    secretAccessKey: process.env.AWSSecretKey,
+})
 
 AWS.config.update({
-  region: "eu-west-2",
-  endpoint: "http://localhost:8000"
+    credentials,
+    region: "us-east-1"
 });
 
 const dynamodb = new AWS.DynamoDB();
