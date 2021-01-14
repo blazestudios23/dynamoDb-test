@@ -82,7 +82,9 @@
   },
   "include": [
     "src/**/*.ts",
-    "spec/**/*.ts"
+    "spec/**/*.ts",
+    "dynamodb/**/*.ts"
+
   ],
   "exclude": [
     "src/public/"
