@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/shell/ || exit 1"]
+      interval: 1s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+
+  api:
+    build:
+      context: ./express-gen-ts
+      dockerfile: Dockerfile.dev
+    container_name: API
+    entrypoint: npm run start:dev
+    depends_on:
+      - dynamodb
+    links:
+      - dynamodb
+    ports:
+      - "3000:3000"
+    expose: 
+      - "3000"
+    volumes: 
+      - ./express-gen-ts:/app
+      - node_modules:/app/node_modules
+    working_dir: /app
+    restart: always
+    # healthcheck:
+    #   test: "curl -f http://api/pingo"
+    #   interval: 5s
+    #   timeout: 3s
+    #   retries: 5
+    # environment:
+    #   AUTH0_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
+    #   DYNAMODB_HOST: dynamodb
+    #   DYNAMODB_PORT: 8000
+    #   DYNAMODB_NO_START: 'true'
+volumes:
+  node_modules:
