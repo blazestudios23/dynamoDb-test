@@ -7,4 +7,5 @@ COPY package.json .
 COPY . .
 
 RUN npm run create-db
+RUN npm run load-data
 

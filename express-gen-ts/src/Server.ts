@@ -14,7 +14,6 @@ const app = express();
 const { BAD_REQUEST } = StatusCodes;
 
 
-
 /************************************************************************************
  *                              Set basic express settings
  ***********************************************************************************/
@@ -34,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Add APIs
+
 app.use('/api', BaseRouter);
 
 // Print API errors
