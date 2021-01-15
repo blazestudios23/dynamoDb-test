@@ -1,23 +1,12 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
-
-import UserDao from '@daos/User/UserDao.mock';
 import { paramMissingError, IRequest } from '@shared/constants';
 import docClient from "../dynamoClient";
 import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client"
 
 const router = Router();
-const userDao = new UserDao();
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
-
-
-
-/******************************************************************************
- *                      Get All Repos - "GET /api/repos/all"
- ******************************************************************************/
-
-router.get('/all', async (req: Request, res: Response) => {
-    const ProjectionExpression = `#id, #node_id, #name, #full_name, #private,
+const ProjectionExpression = `#id, #node_id, #name, #full_name, #private,
     #html_url, #description, #fork, #url, #forks_url, #keys_url, #collaborators_url,
      #teams_url, #hooks_url, #issue_events_url, #events_url, #assignees_url,
       #branches_url, #tags_url, #blobs_url, #git_tags_url, #git_refs_url,
@@ -32,8 +21,8 @@ router.get('/all', async (req: Request, res: Response) => {
 
     const ExpressionAttributeNames = {
         "#id": "id","#node_id": "node_id", "#name": "name", "#full_name": "full_name", 
-        "#private": "private", "#html_url": "html_url", "#description":"description", 
-        "#fork": "fork", "#url": "url", "#forks_url": "forks_url", "#keys_url": "keys_url", 
+      "#private": "private", "#html_url": "html_url", "#description":"description", 
+      "#fork": "fork", "#url": "url", "#forks_url": "forks_url", "#keys_url": "keys_url",
         "#collaborators_url": "collaborators_url", "#teams_url": "teams_url", 
         "#hooks_url": "hooks_url", "#issue_events_url": "issue_events_url", 
         "#events_url": "events_url", "#assignees_url": "assignees_url", 
@@ -61,6 +50,14 @@ router.get('/all', async (req: Request, res: Response) => {
         "#mirror_url": "mirror_url", "#archived": "archived", 
         "#disabled": "disabled", "#open_issues_count": "open_issues_count"
     }
+
+
+/******************************************************************************
+ *                      Get All Repos - "GET /api/repos/all"
+ ******************************************************************************/
+
+router.get('/all', async (req: Request, res: Response) => {
+    
     const params: DocumentClient.ScanInput = {
         TableName: "Repos",
         ProjectionExpression,
@@ -106,15 +103,33 @@ router.get('/all', async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.put('/update', async (req: IRequest, res: Response) => {
-    const { user } = req.body;
-    if (!user) {
+    const { repo } = req.body;
+    console.log(repo);
+    
+    if (!repo) {
         return res.status(BAD_REQUEST).json({
             error: paramMissingError,
         });
     }
-    user.id = Number(user.id);
-    await userDao.update(user);
-    return res.status(OK).end();
+  
+    const { node_id, name, full_name, html_url, description, 
+        fork, url, forks_url, keys_url, collaborators_url} = repo
+    const id = Number(repo.id);
+
+    const params: DocumentClient.PutItemInput = {
+        TableName: "Repos",
+        ReturnConsumedCapacity: "TOTAL", 
+        Item: {id, node_id, name, full_name, html_url, description, fork, url, forks_url, keys_url, 
+        collaborators_url
+    }
+    };
+    docClient.put(params, function(err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+            console.log(data);
+            res.send(data) // successful response
+            }       
+      })
 });
 
 
@@ -123,11 +138,9 @@ router.put('/update', async (req: IRequest, res: Response) => {
  *                    Delete - "DELETE /api/users/delete/:id"
  ******************************************************************************/
 
-router.delete('/delete/:id', async (req: IRequest, res: Response) => {
-    const { id } = req.params;
-    await userDao.delete(Number(id));
-    return res.status(OK).end();
-});
+// router.delete('/delete/:id', async (req: IRequest, res: Response) => {
+//   todo
+// });
 
 
 
