@@ -65,14 +65,6 @@ router.get('/all', async (req: Request, res: Response) => {
         TableName: "Repos",
         ProjectionExpression,
         ExpressionAttributeNames
-        // : {
-        //     "#id": "id",
-        //     "#name": "name",
-        //     "#type": "type",
-        //     "#manufacturer": "manufacturer",
-        //     "#fuel_type": "fuel_type",
-        //     "#description": "description"
-        // }
     };
     
     const onScan = (err: any, data: any) => {
@@ -94,42 +86,23 @@ router.get('/all', async (req: Request, res: Response) => {
       }
       docClient.scan(params, onScan);
 
-    //   docClient.query(params, function(err, data) {
-    //     if (err) {
-    //         console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
-    //     } else {
-    //         console.log("Query succeeded.");
-    //         data?.Items?.forEach(function(item) {
-    //             console.log(" -", item.year + ": " + item.title);
-    //         });
-    //     }
-    // });
-    
-    // const users = await userDao.getAll();
-    // return res.status(OK).json({users});
 });
 
 
 
 /******************************************************************************
- *                       Add One - "POST /api/users/add"
+ *                       Add One - "Repo /api/repos/add"
  ******************************************************************************/
 
-router.post('/add', async (req: IRequest, res: Response) => {
-    const { user } = req.body;
-    if (!user) {
-        return res.status(BAD_REQUEST).json({
-            error: paramMissingError,
-        });
-    }
-    await userDao.add(user);
-    return res.status(CREATED).end();
-});
+
+// router.post('/add', async (req: IRequest, res: Response) => {
+// TODO
+// });
 
 
 
 /******************************************************************************
- *                       Update - "PUT /api/users/update"
+ *                       Update - "REPO /api/repo/update"
  ******************************************************************************/
 
 router.put('/update', async (req: IRequest, res: Response) => {
